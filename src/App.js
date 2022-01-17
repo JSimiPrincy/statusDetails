@@ -5,49 +5,61 @@ import axios from "axios";
 class App extends Component {
   constructor(props){
     super(props);
-    this.setState({
-      textarea: ""
-    });
+    this.state = {
+      textarea: ''
+    };
+    this.onHandleChange = this.onHandleChange.bind(this);
+    this.onKeyPress = this.handleKeyChange.bind(this);
   }
-  handleSubmitForm = (event) => {
-    event.preventDefault();
-  }
-  handleChange = (event) => {
+  onHandleChange = (event) => {
     this.setState({
       textarea: event.target.value
-    });
-    
+    })
+  }
+  handleSubmit = (event) => {
+    event.preventDefault();
+    console.log(this.state.textarea);
   }
   handleKeyChange = (event) => {
     if(event.which === 13 /* Enter */) {
-      alert("Submitted Text");
-      const textarea = document.getElementById('textarea').value
+      event.preventDefault();
+      this.setState({
+        textarea: event.target.value
+      })
       axios({
         method: "POST",
         url: 'http://localhost:8080/home',
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(textarea)
-      }).then(res => res.json(textarea))
-      event.preventDefault();
+        body: JSON.stringify(this.state.textarea)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.success) {
+          this.setState({
+            textarea: ''
+          });
+        }
+      });
+      alert("Submitted Text");
     }
+    
   }
   render() {
     return(
       <div className="wrapper">
         <h5><i>Status Detais</i></h5>
-        <form onSubmit={event => this.handleSubmitForm(event)}
-        onChange={event => this.handleChange(event)}
-        onKeyPress={event => this.handleKeyChange(event)}>
+        <form onSubmit={this.state.textarea}
+        onKeyPress={this.handleKeyChange}>
         <textarea
         name="textarea"
         id="textarea"
-        value={this.setState.textarea}
         maxLength={1000000000}
         rows={5}
         placeholder="Text Area to enter Status and submit"
-        onChange={event => this.handleChange(event)}>
+        value={this.state.textarea}
+        onChange={(event) => this.onHandleChange(event)}>
         </textarea>
         <br />
         </form>
