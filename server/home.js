@@ -1,8 +1,8 @@
 module.exports = [
     {
-        "text": "hello"
+        "StatusDetails": "hello"
     },
     {
-        "text": "welcome"
+        "StatusDetails": "welcome"
     }
 ]
