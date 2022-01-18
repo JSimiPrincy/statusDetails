@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import './App.css';
 import axios from "axios";
 
@@ -8,41 +8,23 @@ class App extends Component {
     this.state = {
       textarea: ''
     };
-    this.onHandleChange = this.onHandleChange.bind(this);
-    this.onKeyPress = this.handleKeyChange.bind(this);
   }
   onHandleChange = (event) => {
     this.setState({
       textarea: event.target.value
     })
   }
-  handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(this.state.textarea);
-  }
   handleKeyChange = (event) => {
     if(event.which === 13 /* Enter */) {
       event.preventDefault();
-      this.setState({
-        textarea: event.target.value
-      })
+      alert("Submitted Text");
+      console.log(`textarea: ${this.setState.textarea}`);
       axios({
         method: "POST",
         url: 'http://localhost:8080/home',
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(this.state.textarea)
+        body: {
+          StatusDetails: this.state.textarea}
       })
-      .then(res => res.json())
-      .then(data => {
-        if(data.success) {
-          this.setState({
-            textarea: ''
-          });
-        }
-      });
-      alert("Submitted Text");
     }
     
   }
@@ -50,16 +32,15 @@ class App extends Component {
     return(
       <div className="wrapper">
         <h5><i>Status Detais</i></h5>
-        <form onSubmit={this.state.textarea}
-        onKeyPress={this.handleKeyChange}>
+        <form onKeyPress={this.handleKeyChange}>
         <textarea
         name="textarea"
         id="textarea"
+        value={this.state.textarea}
         maxLength={1000000000}
         rows={5}
         placeholder="Text Area to enter Status and submit"
-        value={this.state.textarea}
-        onChange={(event) => this.onHandleChange(event)}>
+        onChange={this.onHandleChange.bind(this)}>
         </textarea>
         <br />
         </form>
